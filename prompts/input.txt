@@ -1,0 +1,11 @@
+{
+  "inputs": "A clean, modern logo featuring the word \"Toth-szervíz\" in bold Arial font, black lettering, centered and written across a simple 2D lightning bolt shape. The lightning is bright yellow, flat and stylized with crisp edges, set against a pure white background. The composition is balanced, with the text integrated seamlessly into the lightning, creating a striking contrast between the black text and yellow shape. The overall style is minimalistic, flat, and professional, suitable for a tech or service brand.",
+  "parameters": {
+    "width": 512,
+    "height": 512,
+    "negative_prompt": "No gradients, shadows, or 3D effects; avoid additional colors beyond black, yellow, and white; no extra symbols, icons, or background patterns; no serif or decorative fonts; no distorted or skewed text; no cluttered or busy composition; no low‑resolution or pixelated elements; no dark or colored backgrounds; no complex textures or gradients on the lightning shape.",
+    "num_inference_steps": 120,
+    "guidance_scale": 20,
+    "seed": 1648475207
+  }
+}

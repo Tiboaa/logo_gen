@@ -1,0 +1,25 @@
+{
+  "inputs": "A modern elegant {shape_ular} logo with a thick broken {subject_clr_0} paintbrush {shape}. Inside the {shape} there is a flowing handwritten text '{text_0}' colored {text_clr_0} the handwritten letters go from the beginig to the end of the {shape}. Under the text '{text_0}' there is an other text '{text_1}' colored {text_clr_1} in a clean {font} font. The background should be pure white. The overall style should be luxurious, minimal, and professional but artsy.",
+    "variables": {
+    "subject_clr_0": "light blue",
+    "subject_clr_1" : "",
+    "letter": "",
+    "shape": "circle",
+    "shape_ular": "circular C shaped",
+    "shape_2": "",
+    "shape_2_ular": "",
+    "text_clr_0": "black",
+    "text_clr_1": "black",
+    "text_0": "Cegnev",
+    "text_1": "az on szlogenje",
+    "font": "Calibri"
+  },
+  "parameters": {
+    "width": 512,
+    "height": 512,
+    "negative_prompt": "no 3D effects, no photorealsism ,no shadows, no bevel, no gradients outside the shapes, no textures, no metallic effects, no photographs, no background patterns, no extra text, no glowing effects.",
+    "num_inference_steps": 120,
+    "guidance_scale": 30,
+    "seed": 1269028409
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "inputs": "Minimalist really thin line-art logo design on a {subject_clr_1} background featuring a {subject_clr_0} shapes forming a stylized mountain peak created only from a few simple lines. The {shape_ular} shape of the {shape}, intersected by a diagonal line connected to the {shape}'s line ending in a small {shape_2}. The thin {subject_clr_0} line-art is one simple UNBROKEN line that can be drawn without breaking up the line (or picking up the pen). Under the clean, modern line-art logo there is a text: '{text_0}' colored {text_clr_0} and under that a smaller text: '{text_1}' colored {text_clr_0}. For the texts use the font {font}! Simple flat design, professional branding aesthetic, balanced composition.",
+    "variables": {
+    "subject_clr_0": "white",
+    "subject_clr_1" : "black",
+    "letter": "",
+    "shape": "mountain peak",
+    "shape_ular": "triangular",
+    "shape_2": "circle",
+    "shape_2_ular": "circular",
+    "text_clr_0": "white",
+    "text_clr_1": "",
+    "text_0": "the name of the company",
+    "text_1": "catchy slogen",
+    "font": "Calibri"
+  },
+  "parameters": {
+    "width": 512,
+    "height": 512,
+    "negative_prompt": "no gradients, no shadows, not thick line, no 3D effects, no bevel, no glossy effects, no textures, no decorative fonts, no handwriting, no curves outside the letters, no background patterns, no extra symbols, no glowing effects.",
+    "num_inference_steps": 120,
+    "guidance_scale": 30,
+    "seed": 1269028409
+  }
+}
