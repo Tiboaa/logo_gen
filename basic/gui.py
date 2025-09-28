@@ -1,10 +1,16 @@
 from tkinter import *
 from tkinter import messagebox
+from PIL import Image, ImageTk
 import os
 import subprocess
 import sys
 import json
 import unicodedata
+
+current_logo_path = ""
+logo_0 = ""
+logos = []
+logo_on_merch = ""
 
 root = Tk()
 root.title("Logo Generator")
@@ -45,6 +51,7 @@ canvas.create_window((0, 0), window=current_frame, anchor="nw")
 
 def create_from_preset(preset):
     clear_widgets()
+    canvas.yview_moveto(0)
     print("hi mom")
     global subject_clr_0, subject_clr_1, letter, shape, shape_ular, shape_2, shape_2_ular, text_clr_0, text_clr_1, text_0, text_1, font
  
@@ -135,6 +142,7 @@ def create_from_preset(preset):
 
 def create_new():
     clear_widgets()
+    canvas.yview_moveto(0)
     global l_subject, l_shape, subject_style, shape_style, subject_clr, shape_clr, xtra_inf, change_prompt, inputs_display
 
     l_subject = Entry(current_frame)
@@ -184,8 +192,9 @@ def create_new():
     load_logo_data()
     load_current_inputs()
 
-def create_pdf():
+def create_json():
     clear_widgets()
+    canvas.yview_moveto(0)
     global pdf_main_color_entry, pdf_main_hex_entry, pdf_secondary_color_entry, pdf_secondary_hex_entry, pdf_display_main, pdf_display_secondary
 
     ensure_pdf_json()
@@ -226,12 +235,222 @@ def create_pdf():
     pdf_display_secondary = Text(current_frame, height=10, width=40)
     pdf_display_secondary.grid(row=7, column=2, rowspan=5, padx=10, pady=5)
 
+    # PAGES
+    Button(current_frame, text="Create pages with Main colors", width=25, command=lambda: create_color_pages("main")).grid(row=12, column=1, columnspan=2, pady=5)
+    Button(current_frame, text="Create pages with Secondary colors", width=30, command=lambda: create_color_pages("secondary")).grid(row=13, column=1, columnspan=2, pady=5)
+
+    # MAKE PDF
+    
+
     # MISCELLANEOUS
-    Button(current_frame, text="Delete everything from the JSON", width=25, command=lambda: delete_from_pdf(True, 0, "")).grid(row=16, column=0, columnspan=2, pady=5) 
-    Button(current_frame, text="Stop the program", width=25, command=exit_app).grid(row=17, column=0, columnspan=2, pady=5)
+    Button(current_frame, text="Delete everything from the JSON", width=25, command=lambda: delete_from_pdf(True, 0, "")).grid(row=16, column=1, columnspan=2, pady=5) 
+    Button(current_frame, text="Stop the program", width=25, command=exit_app).grid(row=17, column=1, columnspan=2, pady=5)
 
     load_pdf_display()
 
+def arculat_from_json():
+    canvas.yview_moveto(0)
+    clear_widgets()
+    global logo_0, logo_on_merch, logos
+
+    logos = []
+    folder_path = "arculatok/json"
+    try:
+        json_files = [f for f in os.listdir(folder_path) if f.endswith(".json")]
+    except FileNotFoundError:
+        json_files = []
+
+    grid_index = 1
+    Label(current_frame, text="Choose a json to continue").grid(row=0, column=0, padx=220, pady=4)
+    for i, filename in enumerate(json_files):
+        Button(current_frame, text=filename.replace(".json", ""), width=25, command=lambda f=filename: arculat_chosen(f) ).grid(row=1+i, column=0, padx=220, pady=1)
+        grid_index += 1
+    Label(current_frame).grid(row=grid_index, column=0)
+    Button(current_frame, text="Stop the program", width=25, command=exit_app).grid(row=grid_index+1, column=0, columnspan=2)
+
+    def arculat_chosen(file):
+        clear_widgets()
+        canvas.yview_moveto(0)
+
+        add_image_selector()
+
+        Label(current_frame, text="Edit "+file+":").grid(row=0, column=0, padx=4, pady=4)
+
+        with open("arculatok/json/"+file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        text_widgets = []
+
+        for i in range(len(data[0])):
+            Label(current_frame, text=f"Page {i+1}").grid(row=1+10*i, column=0, padx=4, pady=4)
+            Label(current_frame, text=f"{data[0][i]['sub_title']}").grid(row=2+10*i, column=0, padx=4, pady=4)
+            json_text = Text(current_frame, height=5, width=40, wrap=WORD)
+            json_text.grid(row=3+10*i, column=0, rowspan=5, padx=10, pady=5)
+            text_lines = data[0][i]["text"]
+
+            for line in text_lines:
+                json_text.insert("end", line + "\n")
+        
+            text_widgets.append(json_text)
+
+
+        def save_changes():
+                for i, text_widget in enumerate(text_widgets):
+                    new_text = text_widget.get("1.0", "end").strip().split("\n")
+                    data[0][i]["text"] = new_text
+
+                with open("arculatok/json/" + file, "w", encoding="utf-8") as f:
+                    json.dump(data, f, ensure_ascii=False, indent=2)
+
+                print("✅ Changes saved to", file)
+
+        def go_back_and_save():
+            save_changes()
+            arculat_from_json()
+
+        def go_back_without_save():
+            arculat_from_json()
+
+        def create_arculat():
+            save_changes()
+            print(f"main: {logo_0}")
+            print(f"merch: {logo_on_merch}")
+            print(f"secondary: {logos}")
+            # THIS SHOULD CALL basic\arculat.py
+            
+
+        Button(current_frame, text="Save and generate arculat", width=25, command=create_arculat).grid(row=1000, column=0)
+        Button(current_frame, text="Go back (and save)", width=25, command=go_back_and_save).grid(row=1001, column=0)
+        Button(current_frame, text="Go back (without save)", width=25, command=go_back_without_save).grid(row=1002, column=0)
+        Button(current_frame, text="Stop the program", width=25, command=exit_app).grid(row=1003, column=0)
+
+    def add_image_selector():
+        frame = Frame(current_frame)
+        frame.grid(row=0, column=1, rowspan=1000, sticky="n")
+        folder = "output_pics"
+        png_files = [f for f in os.listdir(folder) if f.endswith(".png")]
+
+        search_var = StringVar()
+        
+
+        def choose_image(where):
+            global logo_0, logos, logo_on_merch
+            if not current_logo_path:
+                return
+            
+            logo_name = os.path.basename(current_logo_path)
+            if where == "main":
+                logo_0 = logo_name
+                update_main_listbox()
+                print(where)
+                print(logo_0)
+                return
+            if where == "merch":
+                logo_on_merch = logo_name
+                update_merch_listbox()
+                print(where)
+                print(logo_on_merch)
+                return
+            if where == "secondary":
+                print(where)
+                if logo_name not in logos:
+                    if len(logos) >= 4:
+                        messagebox.showwarning("Limit reached", "Cannot add more than 4 logos. Please delete one first.")
+                        print("cannot add more than 4 delete one")
+                    else:
+                        logos.append(logo_name)
+                print(logos)
+                update_secondary_listbox()
+                return   
+
+
+        def delete_selected_secondary_logo():
+            global logos
+            selection = secondary_listbox.curselection()
+            if not selection:
+                return 
+            for index in reversed(selection):
+                logo = secondary_listbox.get(index)
+                if logo in logos:
+                    logos.remove(logo)
+            update_secondary_listbox()
+
+        def update_list(*args):
+            search_term = search_var.get().lower()
+            listbox.delete(0, END)
+            for f in png_files:
+                if search_term in f.lower():
+                    listbox.insert(END, f)
+        def update_main_listbox():
+            main_listbox.config(state=NORMAL)
+            main_listbox.delete(0, END)
+            if logo_0:
+                main_listbox.insert(END, logo_0)
+            main_listbox.config(state=DISABLED)
+
+        def update_secondary_listbox():
+            secondary_listbox.config(state=NORMAL)
+            secondary_listbox.delete(0, END)
+            for logo in logos:
+                secondary_listbox.insert(END, logo)
+            #secondary_listbox.config(state=DISABLED)
+
+        def update_merch_listbox():
+            on_merch_listbox.config(state=NORMAL)
+            on_merch_listbox.delete(0, END)
+            if logo_on_merch:
+                on_merch_listbox.insert(END, logo_on_merch)
+            on_merch_listbox.config(state=DISABLED)
+
+
+        def show_image(event):
+            selection = listbox.curselection()
+            if not selection:
+                return
+            filename = listbox.get(selection[0])
+            path = os.path.join(folder, filename)
+            global current_logo_path
+            current_logo_path = path
+            img = Image.open(path)
+            img.thumbnail((200, 200))
+            img_tk = ImageTk.PhotoImage(img)
+
+            if hasattr(frame, "current_img_label"):
+                frame.current_img_label.config(image=img_tk)
+                frame.current_img_label.image = img_tk
+            else:
+                frame.current_img_label = Label(frame, image=img_tk)
+                frame.current_img_label.image = img_tk
+                frame.current_img_label.grid(row=2, column=1, columnspan=5, pady=10)
+
+        Entry(frame, textvariable=search_var).grid(row=0, column=1, padx=5, pady=5, sticky='w')
+        search_var.trace_add("write", update_list)
+
+        listbox = Listbox(frame, width=40, height=10)
+        listbox.grid(row=1, column=1, columnspan=5, padx=5, pady=5)
+        listbox.bind("<<ListboxSelect>>", show_image)
+
+        Button(frame, width=25, text="Choose image as main logo", command=lambda : choose_image("main")).grid(row=3, column=1)
+        Button(frame, width=25, text="Add image as logo", command=lambda : choose_image("secondary")).grid(row=4, column=1)
+        Button(frame, width=25, text="Choose as logo on merch", command=lambda : choose_image("merch")).grid(row=5, column=1)
+
+        Label(frame, text="Main logo:").grid(row=6, column=1, sticky='w')
+        main_listbox = Listbox(frame, width=40, height=2)
+        main_listbox.grid(row=7, column=1, pady=2)
+        Label(frame, text="Logo variants:").grid(row=8, column=1, sticky='w')
+        secondary_listbox = Listbox(frame, width=40, height=4)
+        secondary_listbox.grid(row=9, column=1, pady=2)
+        Button(frame, width=25, text="Delete selected logo", command=delete_selected_secondary_logo).grid(row=10, column=1, padx=5, sticky='w')
+
+        Label(frame, text="Logo on merch:").grid(row=11, column=1, sticky='w')
+        on_merch_listbox = Listbox(frame, width=40, height=2)
+        on_merch_listbox.grid(row=12, column=1, pady=2)
+
+        update_list()
+        update_main_listbox()
+        update_secondary_listbox()
+        update_merch_listbox()
+       
 def open_api_key_window():
     win = Toplevel(root)
     win.title("Enter API Key")
@@ -247,17 +466,17 @@ def open_api_key_window():
 
     warning_label = Label(win, text="", fg="red")
     warning_label.pack()
-     
+    key = api_key_var.get().strip()
+
     def save_and_close():
         key = api_key_var.get().strip()
         if not (key.startswith("hf_") and len(key) == 37):
             warning_label.config(text="Invalid API Key (must start with 'hf_' and be 37 chars long)")
             return
-        api_key_required()
+        api_key_required(key)
         win.destroy()
-        
 
-    api_key_required()
+    api_key_required(key)
     Button(win, text="Save", command=save_and_close).pack(pady=10)
     
 # ---------------- MENU ----------------
@@ -295,14 +514,37 @@ helpmenu = Menu(menu, tearoff=0)
 menu.add_cascade(label="Help", menu=helpmenu)
 helpmenu.add_command(label="About")
 
-menu.add_command(label="Create PDF", command=create_pdf)  
+arculat = Menu(menu, tearoff=0)
+menu.add_cascade(label="Arculat", menu=arculat)  
+arculat.add_command(label="Create JSON", command=create_json)
+arculat.add_command(label="Arculat from PDF", command=arculat_from_json)  
 menu.add_command(label="API Key", command=open_api_key_window)
 
 
 
 # ---------------- KISEBB FÜGGVÉNYEK ----------------
-def api_key_required():
-    if not api_key_var.get().strip():
+
+def create_color_pages(colors):
+    api_key = api_key_var.get().strip()
+    if not api_key.startswith("hf_") or len(api_key) != 37:
+        messagebox.showerror("Invalid API Key", "Please enter a valid Hugging Face API key.")
+        return
+    
+    if colors in ("main", "secondary"):
+        try:
+            subprocess.run(
+                ["python", "basic/create_page_text.py", colors, api_key],
+                check=True
+            )
+        except subprocess.CalledProcessError as e:
+            messagebox.showerror("Execution Error", f"Failed to run create_page_text.py:\n{e}")
+        return
+    
+    print("Error: This shouldn't happen, there might be a typo.")
+    return
+
+def api_key_required(key):
+    if not (key.startswith("hf_") and len(key) == 37):
         info_label = Label(root, text="API Key Required", fg="red", bg="lightgray")
         info_label.place(x=0, y=0, anchor="nw")
     else:
@@ -474,7 +716,7 @@ def ensure_pdf_json():
 
 def run_preset(num, grid_index, preset):
     api_key = api_key_var.get().strip()
-    if not api_key.startswith("hf_") or len(api_key) < 10:
+    if not api_key.startswith("hf_") or len(api_key) != 37:
         messagebox.showerror("Invalid API Key", "Please enter a valid Hugging Face API key.")
         return
 
@@ -584,7 +826,7 @@ def load_logo_data():
 
 def generate_prompt():
     api_key = api_key_var.get().strip()
-    if not api_key.startswith("hf_") or len(api_key) < 10:
+    if not api_key.startswith("hf_") or len(api_key) != 37:
         messagebox.showerror("Invalid API Key", "Please enter a valid Hugging Face API key.")
         return
 
@@ -641,7 +883,7 @@ def generate_prompt():
 
 def regenerate_prompt():
     api_key = api_key_var.get().strip()
-    if not api_key.startswith("hf_") or len(api_key) < 10:
+    if not api_key.startswith("hf_") or len(api_key) != 37:
         messagebox.showerror("Invalid API Key", "Please enter a valid Hugging Face API key.")
         return
     
@@ -690,7 +932,7 @@ def generate_img():
         return
 
     api_key = api_key_var.get().strip() 
-    if not api_key.startswith("hf_") or len(api_key) < 10:
+    if not api_key.startswith("hf_") or len(api_key) != 37:
         messagebox.showerror("Invalid API Key", "Please enter a valid Hugging Face API key.")
         return
 
@@ -737,7 +979,7 @@ def clear_all(button):
 def clear_widgets():
     global subject_clr_0, subject_clr_1, letter, shape, shape_ular, shape_2, shape_2_ular
     global text_clr_0, text_clr_1, text_0, text_1, font
-    global logo_0, logo_1, logo_2, logo_3, logo_4, logo_merch, banner, banner_wide
+    global logo_0, logos, logo_merch, banner, banner_wide
     global inputs_display
 
     for widget in current_frame.winfo_children():

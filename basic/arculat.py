@@ -1,8 +1,9 @@
 import json
+import sys
+import subprocess
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-
 
 pdfmetrics.registerFont(TTFont("Arial", "arial.ttf"))
 pdfmetrics.registerFont(TTFont("ArialBold", "arialbd.ttf"))
@@ -43,6 +44,27 @@ logo_dict = {
     "size": (512,512, 1024,1024, 512,512) #size of the images
     #IDK just use dict for logos it seems easier that way
 }
+
+if len(sys.argv) > 1:
+    json_file = sys.argv[1]
+    with open(json_file, "r", encoding="utf-8") as f:
+        logos_data = json.load(f)
+    
+    logo_0 = logos_data.get("logo_0", "")
+    logo_on_merch = logos_data.get("logo_on_merch", "")
+    secondary_logos = logos_data.get("secondary_logos", [])
+
+def make_transparent(input_file):
+    result = subprocess.run(
+        ["python", "basic/alpha_chanel.py", input_file],
+        capture_output=True,
+        text=True
+    )
+    if result.returncode != 0:
+        print("Transparency failed:", result.stderr)
+        return input_file
+    output_file = result.stdout.strip()
+    return output_file
 
 def draw_squares(c, colors, square_size):
     steps = page_height / (len(colors) + 1)
@@ -117,10 +139,35 @@ def createPage(title, sub_title, text, c):
     
     c.drawImage(logo_0, logo_x, logo_y, width=512/1.5, height=512/1.5, mask='auto')
 
-def createPdf(filename):
+def createPdf(filename, logos_dict=None):
+    global logo_0, logo_1, logo_2, logo_3, logo_4, logo_on_merch, secondary_logos
+    if logos_dict:
+        logo_0 = logos_dict.get("logo_0", "")
+        logo_on_merch = logos_dict.get("logo_on_merch", "")
+        secondary_logos = logos_dict.get("secondary_logos", [])
+    else:
+        if secondary_logos is None:
+            secondary_logos = []
+
+    logo_1 = secondary_logos[0] if len(secondary_logos) > 0 else ""
+    logo_2 = secondary_logos[1] if len(secondary_logos) > 1 else ""
+    logo_3 = secondary_logos[2] if len(secondary_logos) > 2 else ""
+    logo_4 = secondary_logos[3] if len(secondary_logos) > 3 else ""
+    logo_0 = make_transparent(logo_0)
+    logo_on_merch = make_transparent(logo_on_merch)
+
+    if len(secondary_logos) > 0:
+        logo_1 = make_transparent(secondary_logos[0])
+    if len(secondary_logos) > 1:
+        logo_2 = make_transparent(secondary_logos[1])
+    if len(secondary_logos) > 2:
+        logo_3 = make_transparent(secondary_logos[2])
+    if len(secondary_logos) > 3:
+        logo_4 = make_transparent(secondary_logos[3])
+
     c = canvas.Canvas(filename, pagesize=(page_width, page_height))
     
-    with open("basic/pdf_text.json", "r", encoding="utf-8") as f:
+    with open("basic/pdf_text_original.json", "r", encoding="utf-8") as f: #arculatok/json/pdf_text.json
         pages = json.load(f)
 
     n = 0
@@ -141,6 +188,7 @@ def createPdf(filename):
             c.drawImage(logo_1, page_width/3 - 100, page_height/2 - 512, width=1024, height=1024, mask='auto')
             c.drawImage(logo_0, page_width/1.5 - 100, page_height/2 - 512, width=1024, height=1024, mask='auto')
            
+        print(page["title"])
         if page["title"] == "LOGÓ SZÍNEI":
             hex_color = pages[1][page["sub_title"]]
             c.setFillColor(hex_color)
