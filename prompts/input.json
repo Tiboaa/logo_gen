@@ -1,11 +1,11 @@
 {
-  "inputs": "A clean, modern logo featuring a white silhouette of a snail wearing a gas mask, centered inside a circular shape that is filled with a smooth dark grey to black gradient. The circle is crisp and solid, set against a pure white background. To the right of the logo, the word \"X-terminators\" is rendered in bold Impact font, perfectly aligned and spaced, matching the high‑contrast aesthetic. The overall design is flat, vector‑style, with sharp edges, no shadows, and a strong visual hierarchy suitable for branding and merchandise.",
+  "inputs": "green cartoonish airplane, bright vivid colors, whimsical style, smooth outlines, playful cartoon illustration, high detail, simple background",
   "parameters": {
     "width": 512,
     "height": 512,
-    "negative_prompt": "No photorealistic details, no textures, no gradients on the snail or text, no additional colors beyond white, dark grey, and black, no background other than plain white, no extra symbols, icons, or decorative elements, no 3D effects, no drop shadows, no blur, no distortion, no alternative fonts, no clutter, no gradients on the text, no gradients on the background.",
+    "negative_prompt": "low quality, blurry, pixelated, realistic, photorealistic, text, watermark, signature, distortion, noise",
     "num_inference_steps": 120,
     "guidance_scale": 20,
-    "seed": 3239875056
+    "seed": 2970453639
   }
 }

@@ -21,8 +21,9 @@ hardcoded_vars = {
 
 import sys
 import json
+global variables_json, preset_name, api_key, variables
 
-if len(sys.argv) > 1:
+'''if len(sys.argv) > 1:
     variables_json = sys.argv[1]          # first argument is JSON
     preset_name = sys.argv[2] if len(sys.argv) > 2 else "a1"
     api_key = sys.argv[3] if len(sys.argv) > 3 else ""
@@ -30,34 +31,39 @@ if len(sys.argv) > 1:
 else:
     variables = hardcoded_vars.copy()
     preset_name = "a1"
-    api_key = ""
+    api_key = ""'''
 
 
 # --- API setup ---
-ACCESS_TOKEN = api_key
+#ACCESS_TOKEN = api_key
 MODEL = "black-forest-labs/FLUX.1-schnell"
-url = f"https://api-inference.huggingface.co/models/{MODEL}"
-headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
+URL = f"https://api-inference.huggingface.co/models/{MODEL}"
 
-premade_propmt = os.path.join("premade_prompts", f"{preset_name}.json")
+def generate_image(variables_json, preset_name, api_key):
+    variables_json
+    if variables_json is None:
+        variables_json = hardcoded_vars.copy()
 
-with open(premade_propmt, "r", encoding="utf-8") as f:
-    premade_data = json.load(f)
+    headers = {"Authorization": f"Bearer {api_key}"}
 
-payload = premade_data.copy()
+    premade_propmt = os.path.join("premade_prompts", f"{preset_name}.json")
 
-inputs_template = payload["inputs"]
-payload["inputs"] = inputs_template.format(**variables)
+    with open(premade_propmt, "r", encoding="utf-8") as f:
+        premade_data = json.load(f)
 
-if "variables" in payload:
-    del payload["variables"]
+    payload = premade_data.copy()
+    inputs_template = payload["inputs"]
+    payload["inputs"] = inputs_template.format(**variables_json)
 
-payload["parameters"]["seed"] = random.randint(0, 2**32 - 1)
+    if "variables" in payload:
+        del payload["variables"]
 
-# --- DEBUG ---
+    payload["parameters"]["seed"] = random.randint(0, 2**32 - 1)
 
-print(f"\nRandom seed used: {payload['parameters']['seed']}")
-print("IMAGE GENERATION IS COMMENTED OUT")
+    # --- DEBUG ---
+
+    print(f"\nRandom seed used: {payload['parameters']['seed']}")
+    print("IMAGE GENERATION IS COMMENTED OUT")
 # --- UNCOMMENT BELOW TO SEND TO API !!! ---
 
 '''resp = requests.post(url, headers=headers, json=payload)

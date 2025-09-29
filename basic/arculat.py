@@ -1,9 +1,11 @@
 import json
-import sys
-import subprocess
+import os
+
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+
+from basic import alpha_chanel
 
 pdfmetrics.registerFont(TTFont("Arial", "arial.ttf"))
 pdfmetrics.registerFont(TTFont("ArialBold", "arialbd.ttf"))
@@ -47,15 +49,9 @@ logo_dict = {
 
 
 def make_transparent(input_file):
-    result = subprocess.run(
-        ["python", "basic/alpha_chanel.py", input_file],
-        capture_output=True,
-        text=True
-    )
-    if result.returncode != 0:
-        print("Transparency failed:", result.stderr)
-        return input_file
-    output_file = result.stdout.strip()
+    alpha_chanel.main(input_file)
+    name = os.path.basename(input_file)
+    output_file = f"arculatok/logos/{name}_transparent.png"
     return output_file
 
 def draw_squares(c, colors, square_size):
@@ -111,7 +107,7 @@ def drawBackground(c, page_width, page_height):
     c.setFillColor("#1F1F1F")
     c.rect(0, 0, page_width / 3, page_height, stroke=0, fill=1)
 
-def createPage(title, sub_title, text, c):
+def createPage(title, sub_title, text, c, logo_on_page):
     drawBackground(c, page_width, page_height)
     c.setFillColor("#FFFFFF")
     c.setFont("ArialBold", title_size)
@@ -129,14 +125,14 @@ def createPage(title, sub_title, text, c):
     logo_x = page_width/6 - 512/3
     logo_y = 0
     
-    c.drawImage(logo_0, logo_x, logo_y, width=512/1.5, height=512/1.5, mask='auto')
+    c.drawImage(logo_on_page, logo_x, logo_y, width=512/1.5, height=512/1.5, mask='auto')
 
-def createPdf(filename, logos_dict=None):
+def createPdf(filename, json_file, main_logo, on_merch, secondarys):
     global logo_0, logo_1, logo_2, logo_3, logo_4, logo_on_merch, secondary_logos
-    text_json = f"arculatok/json/{sys.argv[1]}"
-    logo_0 = f"output_pics/{sys.argv[2]}"
-    logo_on_merch = f"output_pics/{sys.argv[3]}"
-    secondary_logos = [f"output_pics/{logo}" for logo in sys.argv[4].split(" ")]
+    text_json = f"arculatok/json/{json_file}"
+    logo_0 = f"output_pics/{main_logo}"
+    logo_on_merch = f"output_pics/{on_merch}"
+    secondary_logos = [f"output_pics/{logo}" for logo in secondarys]
 
     print("Logos list:", secondary_logos)
 
@@ -163,7 +159,7 @@ def createPdf(filename, logos_dict=None):
     all_colors = pages[1]
 
     for page in pages[0]:
-        createPage(page["title"], page["sub_title"], page["text"], c)
+        createPage(page["title"], page["sub_title"], page["text"], c, logo_0)
 
         if n == 0:
             c.drawImage(logo_0, page_width/1.5 - 512, page_height/2 - 512, width=1024, height=1024, mask='auto')
@@ -302,4 +298,4 @@ def createPdf(filename, logos_dict=None):
         c.showPage()
     c.save()
     
-createPdf("example.pdf")
+#createPdf("example.pdf")

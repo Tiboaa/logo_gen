@@ -1,11 +1,15 @@
+# for i in range(1): #range(num) <= CHANGE LATER TO COMMENT !!!
+
 from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk
 import os
-import subprocess
 import sys
 import json
 import unicodedata
+
+from basic import arculat, create_page_text, presets, prompt_gen_2, prompt_regen
+import basic.main as main_img_gen
 
 current_logo_path = ""
 logo_0 = ""
@@ -178,7 +182,7 @@ def create_new():
     Button(current_frame, text="Generate prompt", width=25, command=generate_prompt).grid(row=7, column=0, columnspan=2)
     Label(current_frame, text="What to change").grid(row=8)
     change_prompt.grid(row=8, column=1)
-    Button(current_frame, text="Regenerate prompt", width=25, command=regenerate_prompt).grid(row=9, column=0, columnspan=2)
+    Button(current_frame, text="Regenerate prompt", width=25, command=regenerate_prompt_gui).grid(row=9, column=0, columnspan=2)
     Label(current_frame, text="Current prompt:").grid(row=9, column=1, columnspan=2)
     Button(current_frame, text="Generate image based\non current prompt", width=25, command=generate_img).grid(row=10, column=0, columnspan=2)
     Button(current_frame, text="Stop the program", width=25, command=exit_app).grid(row=11, column=0, columnspan=2)
@@ -197,6 +201,7 @@ def create_json():
     clear_widgets()
     canvas.yview_moveto(0)
     global pdf_main_color_entry, pdf_main_hex_entry, pdf_secondary_color_entry, pdf_secondary_hex_entry, pdf_display_main, pdf_display_secondary
+    search_json = StringVar()
 
     ensure_pdf_json()
 
@@ -237,13 +242,17 @@ def create_json():
     pdf_display_secondary.grid(row=7, column=2, rowspan=5, padx=10, pady=5)
 
     # PAGES
-    Button(current_frame, text="Create pages with Main colors", width=25, command=lambda: create_color_pages("main")).grid(row=12, column=1, columnspan=2, pady=5)
-    Button(current_frame, text="Create pages with Secondary colors", width=30, command=lambda: create_color_pages("secondary")).grid(row=13, column=1, columnspan=2, pady=5)
+    Button(current_frame, text="Create pages with Main colors", width=25, command=lambda: create_color_pages("main", search_json)).grid(row=12, column=1, columnspan=2, pady=5)
+    Button(current_frame, text="Create pages with Secondary colors", width=30, command=lambda: create_color_pages("secondary", search_json)).grid(row=13, column=1, columnspan=2, pady=5)
 
     # MAKE PDF
     
 
     # MISCELLANEOUS
+    
+
+    Label(current_frame, text="Name the .json: ").grid(row=12, column=0, columnspan=2, padx=2, sticky='w')
+    Entry(current_frame, textvariable=search_json).grid(row=13, column=0, columnspan=2, padx=2, sticky='w')
     Button(current_frame, text="Delete everything from the JSON", width=25, command=lambda: delete_from_pdf(True, 0, "")).grid(row=16, column=1, columnspan=2, pady=5) 
     Button(current_frame, text="Stop the program", width=25, command=exit_app).grid(row=17, column=1, columnspan=2, pady=5)
 
@@ -320,8 +329,8 @@ def arculat_from_json():
                 print(f"main: {logo_0}")
                 print(f"merch: {logo_on_merch}")
                 print(f"secondary: {logos}")
-                subprocess.run([sys.executable, "basic/arculat.py", current_file, logo_0, logo_on_merch, " ".join(logos)])
-            
+                arculat.createPdf("example.pdf", current_file, logo_0, logo_on_merch, logos)
+
 
         Button(current_frame, text="Save and generate arculat", width=25, command=create_arculat).grid(row=1000, column=0)
         Button(current_frame, text="Go back (and save)", width=25, command=go_back_and_save).grid(row=1001, column=0)
@@ -518,33 +527,34 @@ helpmenu = Menu(menu, tearoff=0)
 menu.add_cascade(label="Help", menu=helpmenu)
 helpmenu.add_command(label="About")
 
-arculat = Menu(menu, tearoff=0)
-menu.add_cascade(label="Arculat", menu=arculat)  
-arculat.add_command(label="Create JSON", command=create_json)
-arculat.add_command(label="Arculat from PDF", command=arculat_from_json)  
+arculat_menu = Menu(menu, tearoff=0)
+menu.add_cascade(label="Arculat", menu=arculat_menu)  
+arculat_menu.add_command(label="Create JSON", command=create_json)
+arculat_menu.add_command(label="Arculat from PDF", command=arculat_from_json)  
 menu.add_command(label="API Key", command=open_api_key_window)
 
 
 
 # ---------------- KISEBB FÜGGVÉNYEK ----------------
 
-def create_color_pages(colors):
+def create_color_pages(colors, json):
     api_key = api_key_var.get().strip()
     if not api_key.startswith("hf_") or len(api_key) != 37:
         messagebox.showerror("Invalid API Key", "Please enter a valid Hugging Face API key.")
         return
-    
-    if colors in ("main", "secondary"):
-        try:
-            subprocess.run(
-                ["python", "basic/create_page_text.py", colors, api_key],
-                check=True
-            )
-        except subprocess.CalledProcessError as e:
-            messagebox.showerror("Execution Error", f"Failed to run create_page_text.py:\n{e}")
+    json_str = json.get().strip()
+    if json_str:
+        savefile_path = f"arculatok/json/{json_str}.json"
+        if not os.path.exists(savefile_path):
+            if colors in ("main", "secondary"):
+                print("hello")
+                create_page_text.main(colors, api_key, f"{json_str}.json")
+                return
+            print("Error: This shouldn't happen, there might be a typo.")
+            return
+        messagebox.showwarning("Rename the file", "A file with this name already exists!")
         return
-    
-    print("Error: This shouldn't happen, there might be a typo.")
+    messagebox.showwarning("Name the file", "Name your file before saving it!")
     return
 
 def api_key_required(key):
@@ -756,21 +766,12 @@ def run_preset(num, grid_index, preset):
 
     for i in range(1): #range(num) <= CHANGE LATER TO COMMENT !!!
         try:
-            script_path = ("basic/presets.py")
-            result = subprocess.run(
-                [sys.executable, script_path, json.dumps(variables), preset, api_key],
-                capture_output=True,
-                text=True,
-                check=True
-            )
-            print("[DEBUG] Script stdout:\n", result.stdout)
-            print("[DEBUG] Script stderr:\n", result.stderr)
+            result = presets.generate_image(variables_json=variables, preset_name=preset, api_key=api_key)
+            print("[DEBUG] Result:\n", result)
             messagebox.showinfo("Image Generated", f"✅ Generated {num} logos using preset {preset}")
-        except subprocess.CalledProcessError as e:
-            print(f"[ERROR] Subprocess failed: {e}")
-            print("[ERROR] stdout:\n", e.stdout)
-            print("[ERROR] stderr:\n", e.stderr)
-            messagebox.showerror("Error", "❌ Could not run main.py\nCheck console for details.")
+        except Exception as e:
+            print(f"[ERROR] Failed to generate image: {e}")
+            messagebox.showerror("Error", f"❌ Could not generate logo\n{e}")
 
 def load_current_inputs():
     global inputs_display
@@ -864,67 +865,41 @@ def generate_prompt():
         json.dump(logo_data, f, indent=4)
 
     try:
-        script_path = os.path.join("basic", "prompt_gen_2.py")
-        
-        result = subprocess.run(
-            [sys.executable, script_path, api_key],
-            capture_output=True,
-            text=True,
-            check=True
-        )
-        print("[DEBUG] Script stdout:\n", result.stdout)
-        print("[DEBUG] Script stderr:\n", result.stderr)
-        messagebox.showinfo("Prompt Generated", "✅ Prompt file created in /prompts folder")
-    except subprocess.CalledProcessError as e:
-        print(f"[ERROR] Subprocess failed: {e}")
-        print("[ERROR] stdout:\n", e.stdout)
-        print("[ERROR] stderr:\n", e.stderr)
-        messagebox.showerror("Error", f"❌ Could not run prompt_gen_2.py\nCheck console for details.")
+        filename = prompt_gen_2.generate_prompt_file(api_key=api_key)
+        messagebox.showinfo("Prompt Generated", f"✅ Prompt file created: {filename}")
     except Exception as e:
-        print(f"[ERROR] Unexpected error: {e}")
-        messagebox.showerror("Error", f"❌ Could not run prompt_gen_2.py\n{e}")
+        print(f"[ERROR] Prompt generation failed: {e}")
+        messagebox.showerror("Error", f"❌ Could not generate prompt.\n{e}")
+
     load_current_inputs()
 
-def regenerate_prompt():
+import basic.prompt_regen as prompt_regen  # Make sure this matches your folder structure
+
+def regenerate_prompt_gui():
+    """Regenerate the current prompt using Hugging Face API and update the GUI."""
     api_key = api_key_var.get().strip()
     if not api_key.startswith("hf_") or len(api_key) != 37:
         messagebox.showerror("Invalid API Key", "Please enter a valid Hugging Face API key.")
         return
-    
+
     if not change_prompt:
         return
     change_text = change_prompt.get().strip()
     if not change_text:
         messagebox.showwarning("No instruction", "Please fill in the 'What to change' field.")
         return
+
     confirm = messagebox.askyesno("Regenerate Prompt", f"Regenerate with:\n\n{change_text}")
-    if not confirm:
-        return
-    print(f"[DEBUG] User confirmation for regenerate: {confirm}")
     if not confirm:
         return
 
     try:
-        print("[DEBUG] Running prompt_regen.py with stdin...")
-        script_path = os.path.join("basic", "prompt_regen.py")
-        result = subprocess.run(
-            [sys.executable, script_path, change_text, api_key],
-            capture_output=True,
-            text=True,
-            check=True
-        )
-        print("[DEBUG] Script stdout:\n", result.stdout)
-        print("[DEBUG] Script stderr:\n", result.stderr)
-        messagebox.showinfo("Prompt Regenerated", "✅ Prompt has been regenerated in /prompts/input.json")
-    except subprocess.CalledProcessError as e:
-        print(f"[ERROR] Subprocess failed: {e}")
-        print("[ERROR] stdout:\n", e.stdout)
-        print("[ERROR] stderr:\n", e.stderr)
-        messagebox.showerror("Error", f"❌ Could not run prompt_regen.py\nCheck console for details.")
+        new_file = prompt_regen.regenerate_prompt(change_text, api_key)
+        load_current_inputs()  # reload updated input.json
+        messagebox.showinfo("Prompt Regenerated", f"✅ Regenerated prompt saved to {new_file}")
     except Exception as e:
-        print(f"[ERROR] Unexpected error: {e}")
-        messagebox.showerror("Error", f"❌ Could not run prompt_regen.py\n{e}")
-    load_current_inputs()
+        messagebox.showerror("Error", f"❌ Could not regenerate prompt\n{e}")
+
 
 def generate_img():
     confirm = messagebox.askyesno(
@@ -940,26 +915,8 @@ def generate_img():
         messagebox.showerror("Invalid API Key", "Please enter a valid Hugging Face API key.")
         return
 
-    try:
-        print("[DEBUG] Running basic/main.py...")
-        script_path = os.path.join("basic", "main.py")
-        result = subprocess.run(
-            [sys.executable, script_path, api_key],
-            capture_output=True,
-            text=True,
-            check=True
-        )
-        print("[DEBUG] Script stdout:\n", result.stdout)
-        print("[DEBUG] Script stderr:\n", result.stderr)
-        messagebox.showinfo("Image Generated", "✅ Logo image created successfully")
-    except subprocess.CalledProcessError as e:
-        print(f"[ERROR] Subprocess failed: {e}")
-        print("[ERROR] stdout:\n", e.stdout)
-        print("[ERROR] stderr:\n", e.stderr)
-        messagebox.showerror("Error", "❌ Could not run main.py\nCheck console for details.")
-    except Exception as e:
-        print(f"[ERROR] Unexpected error: {e}")
-        messagebox.showerror("Error", f"❌ Could not run main.py\n{e}")
+
+    main_img_gen.main(api_key=api_key)
 
 def clear_all(button):
     if button == "create_new":
