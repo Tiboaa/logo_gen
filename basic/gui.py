@@ -18,6 +18,7 @@ root.geometry("620x440")
 root.minsize(300, 200)
 
 json_path = "basic/logo_data.json"
+current_file = ""
 
 api_key_var = StringVar()
 
@@ -269,8 +270,10 @@ def arculat_from_json():
     Button(current_frame, text="Stop the program", width=25, command=exit_app).grid(row=grid_index+1, column=0, columnspan=2)
 
     def arculat_chosen(file):
+        global current_file
         clear_widgets()
         canvas.yview_moveto(0)
+        current_file = file
 
         add_image_selector()
 
@@ -313,10 +316,11 @@ def arculat_from_json():
 
         def create_arculat():
             save_changes()
-            print(f"main: {logo_0}")
-            print(f"merch: {logo_on_merch}")
-            print(f"secondary: {logos}")
-            # THIS SHOULD CALL basic\arculat.py
+            if logo_0 and logo_on_merch and logos:
+                print(f"main: {logo_0}")
+                print(f"merch: {logo_on_merch}")
+                print(f"secondary: {logos}")
+                subprocess.run([sys.executable, "basic/arculat.py", current_file, logo_0, logo_on_merch, " ".join(logos)])
             
 
         Button(current_frame, text="Save and generate arculat", width=25, command=create_arculat).grid(row=1000, column=0)

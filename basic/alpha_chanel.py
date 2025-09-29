@@ -10,8 +10,8 @@ if len(sys.argv) < 2:
     sys.exit(1)
 
 input_file = sys.argv[1]
-name, ext = os.path.splitext(input_file)
-output_file = f"{name}_transparent.png"
+name = os.path.basename(input_file)
+output_file = f"arculatok/logos/{name}_transparent.png"
 
 img = Image.open(input_file).convert("RGBA")
 datas = img.getdata()

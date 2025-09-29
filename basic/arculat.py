@@ -45,14 +45,6 @@ logo_dict = {
     #IDK just use dict for logos it seems easier that way
 }
 
-if len(sys.argv) > 1:
-    json_file = sys.argv[1]
-    with open(json_file, "r", encoding="utf-8") as f:
-        logos_data = json.load(f)
-    
-    logo_0 = logos_data.get("logo_0", "")
-    logo_on_merch = logos_data.get("logo_on_merch", "")
-    secondary_logos = logos_data.get("secondary_logos", [])
 
 def make_transparent(input_file):
     result = subprocess.run(
@@ -141,18 +133,13 @@ def createPage(title, sub_title, text, c):
 
 def createPdf(filename, logos_dict=None):
     global logo_0, logo_1, logo_2, logo_3, logo_4, logo_on_merch, secondary_logos
-    if logos_dict:
-        logo_0 = logos_dict.get("logo_0", "")
-        logo_on_merch = logos_dict.get("logo_on_merch", "")
-        secondary_logos = logos_dict.get("secondary_logos", [])
-    else:
-        if secondary_logos is None:
-            secondary_logos = []
+    text_json = f"arculatok/json/{sys.argv[1]}"
+    logo_0 = f"output_pics/{sys.argv[2]}"
+    logo_on_merch = f"output_pics/{sys.argv[3]}"
+    secondary_logos = [f"output_pics/{logo}" for logo in sys.argv[4].split(" ")]
 
-    logo_1 = secondary_logos[0] if len(secondary_logos) > 0 else ""
-    logo_2 = secondary_logos[1] if len(secondary_logos) > 1 else ""
-    logo_3 = secondary_logos[2] if len(secondary_logos) > 2 else ""
-    logo_4 = secondary_logos[3] if len(secondary_logos) > 3 else ""
+    print("Logos list:", secondary_logos)
+
     logo_0 = make_transparent(logo_0)
     logo_on_merch = make_transparent(logo_on_merch)
 
@@ -167,7 +154,8 @@ def createPdf(filename, logos_dict=None):
 
     c = canvas.Canvas(filename, pagesize=(page_width, page_height))
     
-    with open("basic/pdf_text_original.json", "r", encoding="utf-8") as f: #arculatok/json/pdf_text.json
+    print(text_json)
+    with open(text_json, "r", encoding="utf-8") as f: #basic/pdf_text_original.json
         pages = json.load(f)
 
     n = 0
