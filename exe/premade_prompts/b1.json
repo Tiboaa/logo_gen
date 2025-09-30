@@ -1,0 +1,25 @@
+{
+  "inputs": "A modern elegant {shape_ular} logo with a thick {subject_clr_0} {shape}. Inside the {shape}, a {subject_clr_1} {shape} contains a flowing handwritten monogram '{letter}' in {text_clr_0} script. Around the {subject_clr_1} {shape} but inside the {subject_clr_0} {shape}, place the text '{text_0}' at the top and '{text_1}' at the bottom, in a clean {font} font following the {shape_ular} shape of the {shape}. Add a small {text_clr_0} decorative {shape_2} curving on the left side of the {shape}. The background should be pure white. The overall style should be luxurious, minimal, and professional.",
+    "variables": {
+    "subject_clr_0": "orange to gold",
+    "subject_clr_1" : "black",
+    "letter": "hj",
+    "shape": "circle",
+    "shape_ular": "circular",
+    "shape_2": "branch",
+    "shape_2_ular": "",
+    "text_clr_0": "gold",
+    "text_clr_1": "black",
+    "text_0": "AZ ÖN CÉGNEVE",
+    "text_1": "AZ ÖN SZLOGENE",
+    "font": "sans-serif"
+  },
+  "parameters": {
+    "width": 512,
+    "height": 512,
+    "negative_prompt": "no 3D effects, no photorealsism ,no shadows, no bevel, no gradients outside the shapes, no textures, no metallic effects, no photographs, no background patterns, no extra text, no glowing effects.",
+    "num_inference_steps": 120,
+    "guidance_scale": 30,
+    "seed": 1269028409
+  }
+}

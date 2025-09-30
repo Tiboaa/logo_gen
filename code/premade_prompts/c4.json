@@ -1,0 +1,25 @@
+{
+  "inputs": "Create a modern, minimalist logo on a white background that is a text that says: '{text_0}' colored {subject_clr_0}. The logo text '{text_0}' is a modern simple but stylish that has {shape}s inside some letters colored {subject_clr_1}, the {shape}s replaces lines that would be in the middle of the letter too. Only one {shape} should be in a letter. Under the logo on the bottom right there is a lowercase text '{text_1}' colored {text_clr_0}, using a {font} font. The overall design should feel sleek, tech-forward, and unique. The logo is only text not images.",
+    "variables": {
+    "subject_clr_0": "red",
+    "subject_clr_1" : "black",
+    "letter": "",
+    "shape": "circle",
+    "shape_ular": "",
+    "shape_2": "",
+    "shape_2_ular": "",
+    "text_clr_0": "black",
+    "text_clr_1": "",
+    "text_0": "CEG KFT",
+    "text_1": "az on szlogene",
+    "font": "Rockwell"
+  },
+  "parameters": {
+    "width": 512,
+    "height": 512,
+    "negative_prompt": "no 3D effects, no photorealsism ,no shadows, no bevel, no gradients outside the shapes, no textures, no metallic effects, no photographs, no bends in the logo, no background patterns, no extra text, no glowing effects.",
+    "num_inference_steps": 120,
+    "guidance_scale": 30,
+    "seed": 1269028409
+  }
+}

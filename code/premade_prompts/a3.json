@@ -1,0 +1,25 @@
+{
+  "inputs": "Modern minimalist logo, abstract geometric shapes formed by a stylized letter {letter} within the shape of a {shape}, the {shape} is not visible neither the {letter} the space they enclose between the {letter} and the {shape} are colored. The {shape_ular} shape is split up by the {letter} to many individul parts colored {subject_clr_0} and {subject_clr_1} colors. The logo is clean flat vector style with a white background. Under it there is a text saying '{text_0}' in bold {font} font colored {text_clr_0}, and under that a smaller text '{text_1}' in a smaller but still {font} font colored {text_clr_1}, balanced professional composition. So the {letter} inside the {shape} is white as the background and the space outside the {letter} but inside the {shape} is colored.",
+    "variables": {
+    "subject_clr_0": "deep pink",
+    "subject_clr_1" : "light and dark blue",
+    "letter": "W",
+    "shape": "horizontal ellipse",
+    "shape_ular": "elliptical",
+    "shape_2": "",
+    "shape_2_ular": "",
+    "text_clr_0": "deep pink",
+    "text_clr_1": "blue",
+    "text_0": "Walt and Walt co",
+    "text_1": "minta szlogen",
+    "font": "Impact"
+  },
+  "parameters": {
+    "width": 512,
+    "height": 512,
+    "negative_prompt": "realistic, 3d render, shadows, gradients, textures, noise, blur, cluttered, serif fonts, handwritten, low quality, busy background, watermarks",
+    "num_inference_steps": 120,
+    "guidance_scale": 30,
+    "seed": 1269028409
+  }
+}

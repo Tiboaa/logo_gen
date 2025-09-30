@@ -1,0 +1,25 @@
+{
+  "inputs": "A modern, minimalistic logo with four abstract shapes forming a symmetrical pattern, resembling {shape}. The shapes point to the edges of the logo. The shapes together have a white outline . Each shape is outlined in white with two filled in vibrant gradient colors ({subject_clr_0} and {subject_clr_1}) and two left as hollow, so only should the white outline is visible . The design sits on a dark pitch black background. Below the icon, include placeholder text in Hungarian: '{text_0}' in bold {text_clr_0} {font} font and '{text_1}' in smaller {text_clr_1} {font} font. The style should be clean, flat, and professional, suitable for a tech or eco-friendly company.",
+    "variables": {
+    "subject_clr_0": "deep pink",
+    "subject_clr_1" : "purple",
+    "letter": "",
+    "shape": "leaves or water drops",
+    "shape_ular": "",
+    "shape_2": "",
+    "shape_2_ular": "",
+    "text_clr_0": "white",
+    "text_clr_1": "light pink",
+    "text_0": "az ön cégneve",
+    "text_1": "AZ ÖN SZLOGENE",
+    "font": "Impact"
+  },
+  "parameters": {
+    "width": 512,
+    "height": 512,
+    "negative_prompt": "no 3D effects, no shadows, no bevel, no gradients outside the shapes, no textures, no metallic effects, no photographs, no complex details, no background patterns, no extra text, no glowing effects.",
+    "num_inference_steps": 120,
+    "guidance_scale": 30,
+    "seed": 1269028409
+  }
+}

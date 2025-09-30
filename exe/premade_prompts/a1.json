@@ -1,0 +1,25 @@
+{
+  "inputs": "Minimalistic modern logo with white background. Bold white futuristic capital letter {letter} in the center of a vibrant {shape_ular} gradient background ({subject_clr_0} to {subject_clr_1}), this gives a 3D effect. {shape} has abstract bubble-like extensions (they differ in size) on the top left, some of them fuse with the main {shape}. Below the {shape} separate from it, there are two lines of text: first line in {text_clr_0} uppercase that says {text_0}, second line in smaller {text_clr_1} uppercase it says {text_1}. So the logo is the {shape} with an{letter}inside it and two lines of text under it the font of the texts is {font}. Clean, professional, futuristic, high-quality flat vector style, {font} font, simple and sharp. The background is white!",
+  "variables": {
+    "subject_clr_0": "deep pink",
+    "subject_clr_1" : "purple",
+    "letter": "A",
+    "shape": "circle",
+    "shape_ular": "circular",
+    "shape_2": "",
+    "shape_2_ular": "",
+    "text_clr_0": "light gray ",
+    "text_clr_1": "dark pink",
+    "text_0": "company name",
+    "text_1": "slogen",
+    "font": "Calibri"
+  },
+  "parameters": {
+    "width": 512,
+    "height": 512,
+    "negative_prompt": "no distortion, no blur, no extra letters, no extra symbols, no background scene, no mockups, no 3D, no bevel, no shadows, no photo, no realism, no textures, no watermarks, no low resolution, no gradient banding, no icons, no clipart.",
+    "num_inference_steps": 120,
+    "guidance_scale": 30,
+    "seed": 1269028409
+  }
+}

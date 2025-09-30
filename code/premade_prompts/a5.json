@@ -1,0 +1,25 @@
+{
+  "inputs": "A modern elegant {shape_ular} logo with a thin {subject_clr_0} {shape} as an outline. Inside the {shape}, there is a flowing handwritten monogram '{letter}' in {subject_clr_0} color. The monogram has a long wavy line colored the same as the monogram out of the ends of it. Behind the {shape} there is a thick {subject_clr_1} paintbrush line going form left to right. Place the text '{text_0}' colored {text_clr_1} under the logo and '{text_1}' colored {text_clr_0} under it, in a clean {font} font. The background should be pure white. The overall style should be luxurious, minimal, and professional but artsy.",
+    "variables": {
+    "subject_clr_0": "orange to gold",
+    "subject_clr_1" : "black",
+    "letter": "hr",
+    "shape": "circle",
+    "shape_ular": "circular",
+    "shape_2": "",
+    "shape_2_ular": "",
+    "text_clr_0": "gold to orange",
+    "text_clr_1": "black",
+    "text_0": "AZ ON CEGNEVE",
+    "text_1": "AZ ON SZLOGENE",
+    "font": "sans-serif"
+  },
+  "parameters": {
+    "width": 512,
+    "height": 512,
+    "negative_prompt": "no 3D effects, no photorealsism ,no shadows, no bevel, no gradients outside the shapes, no metallic effects, no photographs, no background patterns, no extra text, no glowing effects.",
+    "num_inference_steps": 120,
+    "guidance_scale": 30,
+    "seed": 1269028409
+  }
+}

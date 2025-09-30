@@ -1,0 +1,25 @@
+{
+  "inputs": "A modern elegant {shape_ular} logo with a thick broken {subject_clr_0} paintbrush {shape}. Inside the {shape} there is a flowing handwritten monogram '{letter}' colored {text_clr_0} the handwritten letters beging and ending line come out of the paintbrush {shape}. On the {subject_clr_0} colored paintbrush {shape} place the text '{text_0}' at the top in a clean {font} font following the {shape_ular} shape of the {shape}. So place the text folowing the shape of the {shape}. The {shape} is broken in the place where the handwritten letters come out of it. The letters {letter} have elonged lines at the begining and the end of it. The background should be pure white. The overall style should be luxurious, minimal, and professional but artsy.",
+    "variables": {
+    "subject_clr_0": "light blue mixed with dark blue",
+    "subject_clr_1" : "",
+    "letter": "cn",
+    "shape": "circle",
+    "shape_ular": "circular",
+    "shape_2": "",
+    "shape_2_ular": "",
+    "text_clr_0": "black",
+    "text_clr_1": "",
+    "text_0": "THE NAME OF THE COMPANY",
+    "text_1": "",
+    "font": "Calibri"
+  },
+  "parameters": {
+    "width": 512,
+    "height": 512,
+    "negative_prompt": "no 3D effects, no photorealsism ,no shadows, no bevel, no gradients outside the shapes, no textures, no metallic effects, no photographs, no background patterns, no extra text, no glowing effects.",
+    "num_inference_steps": 120,
+    "guidance_scale": 30,
+    "seed": 1269028409
+  }
+}

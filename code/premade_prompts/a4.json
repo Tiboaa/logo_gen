@@ -1,0 +1,25 @@
+{
+  "inputs": "Minimalist modern logo, geometric abstract shape made of colorful overlapping {shape}s, clean vector style, white background, professional branding. The 2 the middle and the top right {shape}s do NOT appear in the logo, only the space they would inhabit! Next to the logo there is a {text_clr_0} text '{text_0}' in sleek {font} font, balanced composition. The logo is an abstract geometric shape made of overlapping {subject_clr_0} {shape}s, forming a modular block-like symbol. The colors are vibrant {subject_clr_1} and {subject_clr_0} but every cube has a separete distinct color not merging with any of the other colors",
+    "variables": {
+    "subject_clr_0": "colorful",
+    "subject_clr_1" : "rainbow colored",
+    "letter": "",
+    "shape": "square",
+    "shape_ular": "",
+    "shape_2": "",
+    "shape_2_ular": "",
+    "text_clr_0": "black",
+    "text_clr_1": "",
+    "text_0": "az U+00F6n cU+00E9gneve",
+    "text_1": "",
+    "font": "Bauhaus 93"
+  },
+  "parameters": {
+    "width": 512,
+    "height": 512,
+    "negative_prompt": "realistic, 3d render, shadows, gradients, textures, noise, blur, low quality, cluttered, handwritten, serif fonts, complex background, watermarks",
+    "num_inference_steps": 120,
+    "guidance_scale": 30,
+    "seed": 1269028409
+  }
+}
